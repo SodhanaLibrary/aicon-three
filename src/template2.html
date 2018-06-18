@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Animaticon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="index.css"/>
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="layout.css"/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+  <script type="text/javascript">
+    window.animaticonObjects = {};
+  </script>
+  <script src="paper/paper-full.min.js" type="text/javascript"></script>
+  <script src="three/three.min.js" type="text/javascript"></script>
+<body>
+  <script>
+  			var container;
+  			var camera, scene, renderer, bonesObj;
+  			var mouseX = 0;
+  			init();
+  			function init() {
+  				container = document.createElement( 'div' );
+  				document.body.appendChild( container );
+
+          var info = document.createElement( 'div' );
+  				info.style.position = 'absolute';
+  				info.style.top = '10px';
+  				info.style.width = '100%';
+  				info.style.textAlign = 'center';
+  				info.innerHTML = 'Simple procedurally-generated shapes<br/>Drag to spin';
+  				container.appendChild( info );
+
+          scene = new THREE.Scene();
+  				scene.background = new THREE.Color( 0xf0f0f0 );
+          camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000 );
+          camera.position.set( 0, 0, 900 );
+  				scene.add( camera );
+
+    			function createBones ( sizing ) {
+            var bone;
+    				bones = [];
+    				var rootBone = new THREE.Bone();
+    				bones.push( rootBone );
+            rootBone.name = 'root';
+    				rootBone.position.y =  - sizing.halfHeight;
+
+            var backBone1 = new THREE.Bone();
+  					bones.push( backBone1 );
+  					rootBone.add( backBone1 );
+            backBone1.position.y = 1;
+
+            var backBone2 = new THREE.Bone();
+  					bones.push( backBone2 );
+  					backBone1.add( backBone2 );
+            backBone2.position.y = sizing.segmentHeight;
+
+            var backBone3 = new THREE.Bone();
+  					bones.push( backBone3 );
+  					backBone2.add( backBone3 );
+            backBone3.position.y = sizing.segmentHeight;
+
+            var leftShoulder = new THREE.Bone();
+            bones.push( leftShoulder );
+            backBone3.add( leftShoulder );
+            leftShoulder.position.y = sizing.segmentHeight;
+
+            var leftHand = new THREE.Bone();
+            bones.push( leftHand );
+            leftShoulder.add( leftHand );
+            leftHand.position.y = sizing.segmentHeight;
+
+            var leftFHand = new THREE.Bone();
+            bones.push( leftFHand );
+            leftHand.add( leftFHand );
+            leftFHand.position.y = sizing.segmentHeight;
+
+            var rightShoulder = new THREE.Bone();
+            bones.push( rightShoulder );
+            backBone3.add( rightShoulder );
+            rightShoulder.position.y = sizing.segmentHeight;
+
+            var rightHand = new THREE.Bone();
+            bones.push( rightHand );
+            rightShoulder.add( rightHand );
+            rightHand.position.y = sizing.segmentHeight;
+
+            var rightFHand = new THREE.Bone();
+            bones.push( rightFHand );
+            rightHand.add( rightFHand );
+            rightFHand.position.y = sizing.segmentHeight;
+
+            var leftWaist = new THREE.Bone();
+            bones.push( leftWaist );
+            rootBone.add( leftWaist );
+            leftWaist.position.y = 1;
+
+            var rightWaist = new THREE.Bone();
+            bones.push( rightWaist );
+            rootBone.add( rightWaist );
+            rightWaist.position.y = 1;
+
+            var leftLeg = new THREE.Bone();
+            bones.push( leftLeg );
+            leftWaist.add( leftLeg );
+            leftLeg.position.y = sizing.segmentHeight / 2;
+
+            var leftFLeg = new THREE.Bone();
+            bones.push( leftFLeg );
+            leftLeg.add( leftFLeg );
+            leftFLeg.position.y = sizing.segmentHeight;
+
+            var rightLeg = new THREE.Bone();
+            bones.push( rightLeg );
+            rightWaist.add( rightLeg );
+            rightLeg.position.y = sizing.segmentHeight / 2;
+
+            var rightFLeg = new THREE.Bone();
+            bones.push( rightFLeg );
+            rightLeg.add( rightFLeg );
+            rightFLeg.name="rightFLeg";
+            rightFLeg.position.y = sizing.segmentHeight;
+
+            // var emptyBone = new THREE.Bone();
+            // bones.push( emptyBone );
+            // rightShoulder.add( emptyBone );
+            // leftShoulder.add( emptyBone );
+            // emptyBone.position.y = sizing.segmentHeight;
+
+            bonesObj = {
+              rightShoulder,
+              leftShoulder,
+              rightHand,
+              leftHand,
+              rightLeg,
+              leftLeg,
+              leftWaist,
+              rightWaist,
+              backBone3
+            }
+
+    				return bones;
+    			}
+
+    			function createMesh (bones) {
+            var skeleton = new THREE.Skeleton( bones );
+    				skeletonHelper = new THREE.SkeletonHelper( skeleton.bones[ 0 ] );
+    				skeletonHelper.skeleton = skeleton; // allow animation mixer to bind to SkeletonHelper directly
+    				var boneContainer = new THREE.Group();
+    				boneContainer.add( skeleton.bones[ 0 ] );
+    				scene.add( skeletonHelper );
+    				scene.add( boneContainer);
+            console.log(boneContainer.getObjectByName('rightFLeg'));
+            return skeletonHelper;
+    			}
+
+          function initBones() {
+    				var segmentHeight = 50;
+    				var segmentCount = 3;
+    				var height = segmentHeight * segmentCount;
+    				var halfHeight = height * 0.5;
+    				var sizing = {
+    					segmentHeight : segmentHeight,
+    					segmentCount : segmentCount,
+    					height : height,
+    					halfHeight : halfHeight
+    				};
+    				//var geometry = createGeometry( sizing );
+    				var bones = createBones( sizing );
+    				mesh = createMesh( bones );
+    				mesh.scale.multiplyScalar( 1 );
+
+            var trackShape = new THREE.Shape();
+    				trackShape.moveTo( -20, 0, 0 );
+    				trackShape.lineTo( -20, 50, 0 );
+    				trackShape.absarc( 0, 50, 20, Math.PI, 0, true );
+    				trackShape.lineTo( 20, 0, 0 );
+    				trackShape.absarc( 0, 0, 20, 2 * Math.PI, Math.PI, true );
+            var geometry = new THREE.ShapeGeometry( trackShape);
+            var material = new THREE.MeshBasicMaterial( {
+              color: 0xff62ff
+            });
+
+            bones.forEach((bone, index) => {
+              //if(index !== bones.length - 1) {
+               bone.add(new THREE.Mesh(geometry, material));
+              //}
+            });
+            //bones[0].rotation.z = Math.PI;
+            //bones[3].rotation.z = Math.PI / 2;
+             //bonesObj.rightShoulder.position.y = bonesObj.backBone3.position.y;
+            bonesObj.rightShoulder.rotation.z = -Math.PI / 2;
+            bonesObj.leftShoulder.rotation.z = Math.PI / 2;
+            bonesObj.leftHand.rotation.z = Math.PI/ 2;
+            bonesObj.rightHand.rotation.z = - Math.PI / 2;
+            bonesObj.rightWaist.rotation.z = -Math.PI / 2;
+            bonesObj.leftWaist.rotation.z = Math.PI / 2;
+            bonesObj.leftLeg.rotation.z = Math.PI/ 2;
+            bonesObj.rightLeg.rotation.z = - Math.PI / 2;
+            scene.add( mesh );
+    			}
+          initBones();
+
+  				renderer = new THREE.WebGLRenderer( { antialias: true } );
+  				renderer.setPixelRatio( window.devicePixelRatio );
+  				renderer.setSize( window.innerWidth, window.innerHeight );
+  				container.appendChild( renderer.domElement );
+  				window.addEventListener( 'resize', onWindowResize, false );
+  			}
+
+        function onWindowResize() {
+  				camera.aspect = window.innerWidth / window.innerHeight;
+  				camera.updateProjectionMatrix();
+  				renderer.setSize( window.innerWidth, window.innerHeight );
+  			}
+
+        function render () {
+  				requestAnimationFrame( render );
+  				// var time = Date.now() * 0.001;
+  				// for ( var i = 0; i < mesh.skeleton.bones.length; i ++ ) {
+					// 	mesh.skeleton.bones[ i ].rotation.z = Math.sin( time * i) * 2 / mesh.skeleton.bones.length;
+					// }
+  				renderer.render( scene, camera );
+  			}
+        render();
+
+  		</script>
+</html>

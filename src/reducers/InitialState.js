@@ -1,0 +1,38 @@
+export default {
+  app:{
+    currentBanner:null,
+    selectedGroup:null,
+    selectedPath:null,
+    selectedSegment:null,
+    animaticonGroups:[],
+    paths:[],
+    bones:[],
+    mainScene:null,
+    showShapesModal:false,
+    size:{
+      width:500,
+      height:500
+    }
+  },
+  animation:{
+    controls:[],
+    clock:null,
+    groupControls:[],
+    selectedControl:null,
+    isAnimationCompleted:false,
+    showAnimationControlsSetModal:false,
+    preDefinedAnimationControlSets:{}
+  },
+  api:{
+
+  },
+  global:{
+    showGlobalMessage:false,
+    globalMessage:'',
+    showAnimaticonObjSetsModal:false
+  },
+  search:{
+    objectsSearchResults:[],
+    bannersSearchResults:[]
+  }
+};

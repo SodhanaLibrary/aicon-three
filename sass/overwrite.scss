@@ -1,0 +1,45 @@
+.fade.in {
+  opacity: 1;
+}
+
+.modal-backdrop.in {
+  opacity: 0.5;
+}
+
+.modal.fade .modal-dialog {
+  transform: translate(0,0);
+}
+
+.modal-footer--buttons {
+  float: right;
+}
+
+.nav-item a {
+  cursor: pointer;
+}
+
+.modal-body-img-preview {
+  margin-top: 10px;
+  max-width: 120px;
+  max-height: 150px;
+}
+
+.modal-footer--buttons .btn {
+  margin-right: 5px;
+}
+
+.dropdown.open .dropdown-menu{
+  display: block;
+  .dropdown-item a{
+    text-decoration: none;
+    width: 100%;
+    display: block;
+  }
+}
+
+.pull-right {
+  .dropdown.open .dropdown-menu {
+    right: 0;
+    left: unset;
+  }
+}

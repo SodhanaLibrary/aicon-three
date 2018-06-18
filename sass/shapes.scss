@@ -1,0 +1,32 @@
+.shapes_body {
+  display: flex;
+  flex-wrap: wrap;
+  max-height: 500px;
+  overflow-y: scroll;
+  &__item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    width: 155px;
+    text-align: center;
+    &--img {
+      width: 2em;
+      height: 2em;
+    }
+    &--name {
+      padding-top: 5px;
+    }
+    &:hover {
+      border: 1px solid #007bff;
+    }
+  }
+}
+
+.imports-object-modal {
+  &--or {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+  &--pathDefinition {
+    width: 90%;
+  }
+}

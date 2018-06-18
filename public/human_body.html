@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>React App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+  .demo {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+    margin: auto;
+  }
+
+  .demo nav a {
+    display: block;
+    padding: 20px 0 0 10px;
+  }
+
+  .aicon-content {
+    display: flex;
+  }
+  </style>
+  <script src="paper/paper-full.min.js" type="text/javascript"></script>
+  <script src="utils.js" type="text/javascript"></script>
+  <script src="opencv.js" type="text/javascript"></script>
+<body>
+  <div class="demo">
+    <div>
+      <div class="control">
+        <button id="tryIt" onclick="onTry()">Try it</button>
+        <button id="tryIt1" onclick="newPath()">New Path</button>
+      </div>
+      <p class="err" id="errorMessage"></p>
+    </div>
+    <div class="aicon-content">
+      <div>
+        <div class="caption">canvasInput <input type="file" id="fileInput" name="file" accept="image/*" /></div>
+        <canvas style="display:none" id="canvasInput"></canvas>
+      </div>
+      <div>
+        <div class="caption">canvasOutput</div>
+        <canvas id="canvasOutput"></canvas>
+      </div>
+    </div>
+  </div>
+  <script id="codeSnippet" type="text/javascript">
+    class HBody {
+      constructor(bones) {
+          this.group = new paper.Group();
+          this.backBone = bones.backBone;
+          this.shoulder = bones.shoulder;
+          this.leftHand = bones.shoulder.startJoint;
+          this.leftFHand = bones.shoulder.startJoint.bone.endJoint;
+          this.rightHand = bones.shoulder.endJoint;
+          this.rightFHand = bones.shoulder.endJoint.bone.endJoint;
+          this.waist = bones.waist;
+          this.leftLeg = bones.waist.startJoint;
+          this.rightLeg = bones.waist.endJoint;
+          this.head = bones.head;
+      }
+
+      toString() {
+          return '(' + this.bones + ')';
+      }
+
+      rotate(seg, angle) {
+        this[seg].bone.rotate(angle);
+      }
+
+      draw(paper) {
+        this.shoulder.draw(paper);
+        this.waist.draw(paper);
+        this.backBone.draw(paper);
+        this.group.addChild(this.head);
+        this.shoulder.setGroup(this.group);
+        this.waist.setGroup(this.group);
+        this.backBone.setGroup(this.group);
+      }
+    }
+
+    class Bone {
+      constructor({start, end, muscleWidth, jointsRadius}) {
+          this.d = muscleWidth;
+          this.start = start;
+          this.end = end;
+          this.length = ((start.x - end.x)*(start.x - end.x)) + ((start.y - end.y)*(start.y - end.y));
+          this.path = new paper.Path();
+          this.path.strokeColor = 'red';
+          this.path.strokeWidth = 2;
+          this.path.add(this.start);
+          this.path.add(this.end);
+          this.joint1 = new paper.Path.Circle(this.start, jointsRadius);
+          this.joint2 = new paper.Path.Circle(this.end, jointsRadius);
+          this.joint1.strokeColor = 'black';
+          this.joint1.strokeWidth = 2;
+          this.joint1.fillColor = 'black';
+          this.joint2.strokeColor = 'black';
+          this.joint2.strokeWidth = 2;
+          this.joint2.fillColor = 'black';
+          var m = -(1/((start.y - end.y) / (start.x - end.x)));
+          var c = end.y - m*end.x;
+          var cn = Math.sqrt((this.d*this.d)/(m*m + 1));
+          this.musclePoints = this.makeMuslePoints(m, end, start, cn, c, this.d);
+      }
+
+      setGroup(group) {
+        this.group = group;
+        this.group.addChild(this.path);
+        this.group.addChild(this.joint1);
+        this.group.addChild(this.joint2);
+        this.group.addChild(this.muslePath);
+        if(this.endJoint && this.endJoint.bone) {
+          this.endJoint.bone.setGroup(group);
+        }
+        if(this.startJoint && this.startJoint.bone) {
+          this.startJoint.bone.setGroup(group);
+        }
+      }
+
+      makeMuslePoints(m, end, start, cn, c, d) {
+        var point1, point2, point3, point4;
+        if(m === Infinity) {
+          var endx, startx;
+          endx = end.x;
+          startx = start.x;
+          // if(end.x > start.x) {
+          //   endx = end.x + d;
+          //   startx = start.x - d;
+          // } else {
+          //   endx = end.x - d;
+          //   startx = start.x + d;
+          // }
+          var point1 = [endx, end.y - d];
+          var point2 = [endx, end.y + d];
+          var point3 = [startx, start.y - d];
+          var point4 = [startx, start.y + d];
+        } else if(m === 0){
+          var endy, starty;
+          endy = end.y;
+          starty = start.y;
+          // if(end.y > start.y) {
+          //   endy = end.y + d;
+          //   starty = start.y - d;
+          // } else {
+          //   endy = end.y - d;
+          //   starty = start.y + d;
+          // }
+          var point1 = [end.x - d, endy];
+          var point2 = [end.x + d, endy];
+          var point3 = [start.x - d, starty];
+          var point4 = [start.x + d, starty];
+        } else {
+          var point1 = [cn + end.x, m*(cn + end.x) + c];
+          var point2 = [end.x - cn, m*(end.x - cn) + c];
+          var point3 = [cn + start.x, m*(cn + start.x) + c];
+          var point4 = [start.x - cn, m*(start.x - cn) + c];
+        }
+        return [point1, point2, point3, point4];
+      }
+
+
+      setStartJoint(bone, startAngle, limitAngle) {
+        this.startJoint = {
+          bone, startAngle, limitAngle
+        }
+      }
+
+      setEndJoint(bone, startAngle, limitAngle) {
+        this.endJoint = {
+          bone, startAngle, limitAngle
+        }
+      }
+
+      toString() {
+          return '(' + this.start + ', ' + this.end + ')';
+      }
+
+      setTopRight(point) {
+        this.path.bounds.setTopRight(point);
+        this.muslePath.bounds.setTopRight(new paper.Point(point.x + this.d, point.y));
+        this.joint1.position = this.path.segments[0].point;
+        this.joint2.position = this.path.segments[1].point;
+      }
+
+      setTopLeft(point) {
+        this.path.bounds.setTopLeft(point);
+        this.muslePath.bounds.setTopLeft(new paper.Point(point.x - this.d, point.y));
+        this.joint1.position = this.path.segments[0].point;
+        this.joint2.position = this.path.segments[1].point;
+      }
+
+      rotate(angle) {
+        this.path.rotate(angle, this.path.segments[0].point);
+        this.muslePath.rotate(angle, this.path.segments[0].point);
+        this.joint1.position = this.path.segments[0].point;
+        this.joint2.position = this.path.segments[1].point;
+        if(this.endJoint && this.endJoint.bone) {
+          if(angle > 0) {
+             this.endJoint.bone.setTopRight(this.path.segments[1].point);
+          } else {
+             this.endJoint.bone.setTopLeft(this.path.segments[1].point);
+          }
+        }
+      }
+
+      draw(paper) {
+        //console.log(this.path.position, this.path.bounds, this.path.bounds.center);
+        if(this.endJoint && this.endJoint.bone) {
+          this.endJoint.bone.draw(paper);
+        }
+        if(this.startJoint && this.startJoint.bone) {
+          this.startJoint.bone.draw(paper);
+        }
+        if(this.musclePoints) {
+          var p = new paper.Path();
+          p.strokeColor = 'black';
+          p.fillColor = 'black';
+          p.strokeWidth = 2;
+          p.closed = true;
+          p.add(new paper.Point(this.musclePoints[0][0], this.musclePoints[0][1]));
+          p.add(new paper.Point(this.musclePoints[1][0], this.musclePoints[1][1]));
+          p.add(new paper.Point(this.musclePoints[3][0], this.musclePoints[3][1]));
+          p.add(new paper.Point(this.musclePoints[2][0], this.musclePoints[2][1]));
+          this.muslePath = p;
+        }
+      }
+    }
+
+    let utils = new Utils('errorMessage');
+    utils.addFileInputHandler('fileInput', 'canvasInput');
+    utils.loadImageToCanvas('human_body.png', 'canvasInput');
+    function onTry() {
+      let src = cv.imread('canvasInput');
+      let dst = new cv.Mat();
+      cv.Canny(src, dst, 50, 200, 3, false);
+
+
+      let M = new cv.Mat();
+      let ksize = new cv.Size(3, 3);
+      // You can try more different parameters
+      M = cv.getStructuringElement(cv.MORPH_CROSS, ksize);
+      cv.imshow('canvasOutput', dst);
+      src.delete(); dst.delete();
+      let src1 = document.getElementById('canvasOutput').toDataURL();
+      setupPaper(src1);
+    }
+
+
+    var path;
+
+    function newPath() {
+      if (path) {
+        path.selected = false;
+      };
+      path = new paper.Path();
+      path.strokeColor = 'black';
+      path.strokeWidth = 2;
+    }
+
+    function setupPaper(src1) {
+
+  		// Get a reference to the canvas object
+  		var canvas = document.getElementById('canvasOutput');
+  		// Create an empty project and a view for the canvas:
+  		paper.setup(canvas);
+      //var raster = new paper.Raster({source: src1, position: paper.view.center});
+      var tool = new paper.Tool();
+
+      path = new paper.Path();
+      path.strokeColor = 'black';
+      path.strokeWidth = 2;
+      path.fullySelected = true;
+
+      // The mouse has to drag at least 20pt
+      // before the next drag event is fired:
+      tool.minDistance = 10;
+
+      tool.onMouseDown = function(event) {
+      	// if (path) {
+      	// 	path.selected = false;
+      	// };
+      	// path = new paper.Path();
+      	// path.strokeColor = 'black';
+        // path.strokeWidth = 3;
+      	// path.fullySelected = true;
+        path.add(event.point);
+        utils.printPath(path);
+        path.selected = true;
+      }
+
+      tool.onMouseDrag = function(event) {
+      	path.add(event.point);
+      }
+
+      tool.onMouseUp = function(event) {
+      	path.selected = false;
+      	//path.smooth();
+        //path.simplify();
+      }
+      var hbody = new HBody(getHumanBones());
+
+      hbody.draw(paper);
+
+      paper.view.draw();
+
+      var intAng = 0;
+      hbody.group.position = new paper.Point(150, 150);
+      hbody.group.scale(0.5);
+      hbody.rotate('leftHand',30);
+      //hbody.rotate('leftLeg',30);
+      hbody.rotate('rightHand',-(30));
+      //hbody.rotate('rightLeg',-(30));
+      // paper.view.onFrame = function(event) {
+      //   hbody.rotate('leftHand',intAng);
+      //   hbody.rotate('rightHand',-(intAng));
+      //   hbody.rotate('leftLeg',intAng);
+      //   hbody.rotate('rightLeg',-(intAng));
+      //   intAng = intAng + 0.001;
+      // }
+
+  	}
+
+    function getHumanBones() {
+      var shoulder = new Bone({
+          start:new paper.Point(209, 103),
+          end:new paper.Point(301, 103),
+          muscleWidth:15,
+          jointsRadius:15
+        });
+      var leftHand = new Bone({
+          start:new paper.Point(209, 103),
+          end:new paper.Point(209, 210),
+          muscleWidth:15,
+          jointsRadius:15
+        });
+      var leftFHand = new Bone({
+          start:new paper.Point(209, 210),
+          end:new paper.Point(209, 300),
+          muscleWidth:15,
+          jointsRadius:15
+        });
+      var rightHand = new Bone({
+          start:new paper.Point(301, 103),
+          end:new paper.Point(301, 210),
+          muscleWidth:15,
+          jointsRadius:15
+        });
+      var rightFHand = new Bone({
+          start:new paper.Point(301, 210),
+          end:new paper.Point(301, 300),
+          muscleWidth:15,
+          jointsRadius:15
+        });
+
+      shoulder.setStartJoint(leftHand, 90, 270);
+      shoulder.setEndJoint(rightHand, 90, 270);
+      rightHand.setEndJoint(rightFHand, 0, 180);
+      leftHand.setEndJoint(leftFHand, 0, 180);
+
+      var waist = new Bone({
+          start:new paper.Point(228, 265),
+          end:new paper.Point(282, 265),
+          muscleWidth:20,
+          jointsRadius:20
+        });
+      var leftLeg = new Bone({
+          start:new paper.Point(228, 265),
+          end:new paper.Point(228, 384),
+          muscleWidth:20,
+          jointsRadius:20
+        });
+      var leftFLeg = new Bone({
+          start:new paper.Point(228, 384),
+          end:new paper.Point(228, 491),
+          muscleWidth:20,
+          jointsRadius:20
+        });
+      var rightLeg = new Bone({
+          start:new paper.Point(282, 265),
+          end:new paper.Point(282, 384),
+          muscleWidth:20,
+          jointsRadius:20
+        });
+      var rightFLeg = new Bone({
+          start:new paper.Point(282, 384),
+          end:new paper.Point(282, 491),
+          muscleWidth:20,
+          jointsRadius:20
+        });
+
+      var backBone = new Bone({
+          start:new paper.Point(255, 115),
+          end:new paper.Point(255, 265),
+          muscleWidth:47,
+          jointsRadius:0
+        });
+
+      waist.setStartJoint(leftLeg, 90, 270);
+      waist.setEndJoint(rightLeg, 90, 270);
+      rightLeg.setEndJoint(rightFLeg, 0, 180);
+      leftLeg.setEndJoint(leftFLeg, 0, 180);
+
+      var head = new paper.Path.Circle(new paper.Point(255, 36), 40);
+      head.strokeColor = 'black';
+      head.fillColor = 'black';
+      return {shoulder, waist, backBone, head};
+    }
+  </script>
+</html>

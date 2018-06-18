@@ -1,0 +1,26 @@
+.search-panel {
+  display: flex;
+  flex-flow: wrap;
+}
+
+.search-panel-item {
+  cursor: pointer;
+  width: 50%;
+  border: 1px solid transparent;
+  text-align: center;
+  padding: 5px;
+  &--banner {
+    width: 100%;
+    max-width: 248px;
+  }
+}
+
+.search-panel-item:hover {
+  border: 1px solid #ccc;
+}
+
+.search-panel-item img{
+  max-height: 150px;
+  margin: auto;
+  max-width: 130px;
+}
