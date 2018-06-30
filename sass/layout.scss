@@ -11,7 +11,6 @@
   width: 300px;
   border-right: 1px solid #ccc;
   position: fixed;
-  padding: 5px;
   overflow-y: scroll;
 }
 
@@ -105,11 +104,37 @@ canvas[resize] {
 }
 
 .mainCanvas {
-  height: 700px;
+  position: relative;
   border: 1px solid #ccc;
+  width: 802px;
+  height: 452px;
+  margin: auto;
+  &:focus {
+    outline: none;
+    border: 1px solid #007bff;
+  }
+  .canvas-absolute-div {
+    position: absolute;
+    z-index: 1;
+    overflow: auto;
+    background-color: transparent;
+  }
+  &__wrapper {
+    height: 700px;
+    border: 1px solid #ccc;
+    text-align: center;
+    overflow: scroll;
+    padding-top: 10px;
+  }
+  canvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+  }
 }
 
 .pre-defined-animation-controls-table {
+  font-size: 0.9em;
   &__btns{
     .btn {
      margin-right: 5px;
@@ -138,6 +163,7 @@ canvas[resize] {
 
 .card-body--form {
   margin-top: 8px;
+  font-size: 0.9em;
 }
 
 .col-sm-bone-field {

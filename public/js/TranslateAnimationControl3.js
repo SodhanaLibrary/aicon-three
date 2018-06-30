@@ -10,6 +10,7 @@ class TranslateAnimationControl3 {
     }
     this.setProps({duration, pathItem, startAt});
     this.groupId = groupId;
+    this.onComplete = this.onComplete.bind(this);
   }
 
   setId(id) {
@@ -23,6 +24,10 @@ class TranslateAnimationControl3 {
   init() {
     this.done = false;
     this.started = false;
+    this.initToStart();
+  }
+
+  initToStart() {
     const p = this.translatePath.getPointAt(0);
     this.group.group.position.x = p.x;
     this.group.group.position.y = p.y;

@@ -1,6 +1,6 @@
 class AnimaticonObj3 {
   constructor({animaticonObjName, name, tags, uuid, objJson, img, bones, paths,
-                  groupId, scene, position={x:0, y:0, z:0}, scale={x:1, y:1, z:1}, visible = true}) {
+                  groupId, scene, position={x:0, y:0, z:0}, scale={x:1, y:1, z:1}, rotation = {x:0, y:0, z:0}, visible = true}) {
       let rbones = bones;
       let rpaths = paths;
       this.scene = scene;
@@ -10,11 +10,11 @@ class AnimaticonObj3 {
         rpaths = aObj.paths;
         position = aObj.position || position;
         scale = aObj.scale || scale;
-        console.log(aObj);
       }
       this.props = {
         position,
         scale,
+        rotation,
         visible
       };
       this.groupId = groupId;
@@ -59,15 +59,7 @@ class AnimaticonObj3 {
       scene.add( this.skeletonHelper );
       scene.add( this.group);
       this.skeletonHelper.visible = false;
-      this.bones.forEach(bone => bone.init());
-
-      this.group.position.x = position.x;
-      this.group.position.y = position.y;
-      this.group.position.z = position.z;
-      this.group.scale.x = scale.x;
-      this.group.scale.y = scale.y;
-      this.group.scale.z = scale.z;
-      this.group.visible = visible;
+      this.init();
   }
 
   setId(id) {
@@ -79,7 +71,7 @@ class AnimaticonObj3 {
   }
 
   init() {
-    const {position, scale, visible} = this.props;
+    const {position, scale, visible, rotation} = this.props;
     this.bones.forEach(bone => {
       bone.init()});
     this.paths.forEach(path => {
@@ -88,10 +80,29 @@ class AnimaticonObj3 {
     this.group.position.x = position.x;
     this.group.position.y = position.y;
     this.group.position.z = position.z;
+
     this.group.scale.x = scale.x;
     this.group.scale.y = scale.y;
     this.group.scale.z = scale.z;
+
+    this.group.rotation.x = rotation.x;
+    this.group.rotation.y = rotation.y;
+    this.group.rotation.z = rotation.z;
+
     this.group.visible = visible;
+  }
+
+  updateProps() {
+    this.props.scale = {
+      x:this.group.scale.x,
+      y:this.group.scale.y,
+      z:this.group.scale.z
+    };
+    this.props.position = {
+      x:this.group.position.x,
+      y:this.group.position.y,
+      z:this.group.position.z
+    };
   }
 
   setColors({fillColor, strokeColor}) {
@@ -104,8 +115,10 @@ class AnimaticonObj3 {
   }
 
   remove() {
-    this.scene.remove(this.group);
-    this.scene.remove(this.skeletonHelper);
+    if(this.group.parent) {
+      this.group.parent.remove(this.skeletonHelper);
+      this.group.parent.remove(this.group);
+    }
   }
 
   addBone() {

@@ -11,6 +11,8 @@ export default function appReducer(state = InitialState.app, action) {
     return Object.assign({},state, {selectedPath:action.selectedPath, selectedGroup:null});
   } else if(action.type === actions.UPDATE_SELECTED_SEGMENT) {
     return Object.assign({},state, {selectedSegment:action.selectedSegment, selectedGroup:null});
+  } else if(action.type === actions.UPDATE_SELECTED_DIV) {
+    return Object.assign({},state, {selectedDiv:action.selectedDiv});
   } else if(action.type === actions.ADD_ANIMATICON_GROUP) {
     const animaticonGroups = state.animaticonGroups.slice(0);
     action.group.setId(uuid);
@@ -24,6 +26,13 @@ export default function appReducer(state = InitialState.app, action) {
     const paths = state.paths.slice(0);
     paths.push(action.path);
     return Object.assign({},state, {paths});
+  } else if(action.type === actions.ADD_DIV) {
+    const divs = state.divs.slice(0);
+    divs.push(action.div);
+    return Object.assign({},state, {divs});
+  } else if(action.type === actions.REMOVE_DIV) {
+    const divs = state.divs.filter(div => div !== action.div);
+    return Object.assign({},state, {divs});
   } else if(action.type === actions.ADD_PATHS) {
     const paths = state.paths.concat(action.paths);
     return Object.assign({},state, {paths});
@@ -55,13 +64,17 @@ export default function appReducer(state = InitialState.app, action) {
       selectedGroup:null,
       currentBanner:null,
       selectedPath:null,
+      selectedDiv:null,
       selectedSegment:null,
       animaticonGroups:[],
+      divs:[],
       paths:[],
       bones:[]
     });
   } else if(action.type === actions.UPDATE_SIZE) {
     return Object.assign({},state, {size:action.size});
+  } else if(action.type === actions.UPDATE_RENDERER) {
+    return Object.assign({},state, {renderer:action.renderer});
   } else {
     return state;
   }

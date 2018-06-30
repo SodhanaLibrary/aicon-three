@@ -8,6 +8,13 @@ import classNames from 'classnames';
 import {Modal, Button} from 'react-bootstrap';
 import Utils from '../common/Utils';
 
+const initStyle = `{
+  "width":"100px",
+  "height":"100px",
+  "left":"10px",
+  "top":"10px",
+  "fontSize":"30px"
+}`;
 class ShapesModal extends React.Component{
   constructor(props){
     super(props);
@@ -15,9 +22,14 @@ class ShapesModal extends React.Component{
     this.draw = this.draw.bind(this);
     this.state = {
       showShapes:true,
-      selectedType:null
+      selectedType:null,
+      text:'',
+      style:initStyle,
+      width:100,
+      height:100
     };
     this.handleChange = this.handleChange.bind(this);
+    this.createText = this.createText.bind(this);
   }
 
   handleClose() {
@@ -47,13 +59,8 @@ class ShapesModal extends React.Component{
         pathData = {
           vertices:geometry.vertices
         }
-    } else if(type === 'Text') {
-      path = new this.props.mainScene.PointText(new this.props.mainScene.Point(30, 30));
-      path.content = 'Write your text here';
     } else if(type === 'Translate') {
       path = new this.props.mainScene.Path.Line(new this.props.mainScene.Point(255, 36), new this.props.mainScene.Point(355, 36));
-    } else if(type === 'speech-cloud') {
-      path = this.props.mainScene.project.importSVG('/img/speech_cloud.svg');
     } else if(type === 'bone') {
       const res = Utils.getSkeleton();
       res.scene = this.props.mainScene;
@@ -142,6 +149,19 @@ class ShapesModal extends React.Component{
     this.props.actions.showHideShapesModal(false);
   }
 
+  createText() {
+    const {style, text} = this.state;
+    this.setState({
+      showShapes:true,
+      selectedType:null
+    });
+    this.props.actions.addDiv({
+      style,
+      text
+    });
+    this.props.actions.showHideShapesModal(false);
+  }
+
   render() {
     return <Modal show={this.props.showShapesModal} onHide={this.handleClose}>
               <div className="modal-header">
@@ -152,10 +172,6 @@ class ShapesModal extends React.Component{
               </div>
               <div className="modal-body">
                  {this.state.showShapes && <div className="shapes_body">
-                   <div className="shapes_body__item" onClick={() => this.draw('Text')}>
-                     <img className="shapes_body__item--img" src="/img/text.svg"/>
-                     <div className="shapes_body__item--name">Text</div>
-                   </div>
                    <div className="shapes_body__item" onClick={() => this.draw('Circle')}>
                      <img className="shapes_body__item--img" src="/img/circle.svg"/>
                      <div className="shapes_body__item--name">Circle</div>
@@ -172,30 +188,48 @@ class ShapesModal extends React.Component{
                      <i className="fas fa-table"></i>
                      <div className="shapes_body__item--name">Custom Geometry</div>
                    </div>
-                   <div className="shapes_body__item" onClick={() => this.draw('speech-cloud')}>
-                     <img className="shapes_body__item--img"  src="/img/speech_cloud.svg"/>
-                     <div className="shapes_body__item--name">Speech cloud</div>
-                   </div>
                    <div className="shapes_body__item" onClick={() => this.draw('bone')}>
                      <img className="shapes_body__item--img"  src="/img/bone.svg"/>
                      <div className="shapes_body__item--name">Skeleton</div>
+                   </div>
+                   <div className="shapes_body__item" onClick={() => this.draw('Text')}>
+                     <img className="shapes_body__item--img"  src="/img/text.svg"/>
+                     <div className="shapes_body__item--name">Text</div>
                    </div>
                  </div>}
                  {!this.state.showShapes && this.state.selectedType === 'Rectangle' && <div>
                    <div className="form-group row">
                      <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Width</label>
                      <div className="col-sm-7">
-                       <input type="text" className="form-control" name="width" required={true} value={this.state.width} onChange={this.handleChange}/>
+                       <input type="text" className="form-control form-control-sm" name="width" required={true} value={this.state.width} onChange={this.handleChange}/>
                      </div>
                    </div>
                    <div className="form-group row">
                      <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Height</label>
                      <div className="col-sm-7">
-                       <input type="text" className="form-control" name="height" value={this.state.height} onChange={this.handleChange}/>
+                       <input type="text" className="form-control form-control-sm" name="height" value={this.state.height} onChange={this.handleChange}/>
                      </div>
                    </div>
                    <div className="form-group">
-                     <button type="submit" onClick={() => this.createRectangle()} className="btn btn-secondary">Create {this.state.selectedType}</button>
+                     <button type="submit" onClick={() => this.createRectangle()} className="btn btn-secondary btn-sm">Create {this.state.selectedType}</button>
+                   </div>
+                 </div>}
+
+                 {!this.state.showShapes && this.state.selectedType === 'Text' && <div>
+                   <div className="form-group row">
+                     <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Style</label>
+                     <div className="col-sm-7">
+                       <textarea rows="7" type="text" className="form-control form-control-sm" name="style" value={this.state.style} onChange={this.handleChange}/>
+                     </div>
+                   </div>
+                   <div className="form-group row">
+                     <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Text</label>
+                     <div className="col-sm-7">
+                       <input type="text" className="form-control form-control-sm" name="text" value={this.state.text} onChange={this.handleChange}/>
+                     </div>
+                   </div>
+                   <div className="form-group">
+                     <button type="submit" onClick={() => this.createText()} className="btn btn-secondary btn-sm">Create {this.state.selectedType}</button>
                    </div>
                  </div>}
 
@@ -203,23 +237,23 @@ class ShapesModal extends React.Component{
                    <div className="form-group row">
                      <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Width</label>
                      <div className="col-sm-7">
-                       <input type="text" className="form-control" name="width" required={true} value={this.state.width} onChange={this.handleChange}/>
+                       <input type="text" className="form-control form-control-sm" name="width" required={true} value={this.state.width} onChange={this.handleChange}/>
                      </div>
                    </div>
                    <div className="form-group row">
                      <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Height</label>
                      <div className="col-sm-7">
-                       <input type="text" className="form-control" name="height" value={this.state.height} onChange={this.handleChange}/>
+                       <input type="text" className="form-control form-control-sm" name="height" value={this.state.height} onChange={this.handleChange}/>
                      </div>
                    </div>
                    <div className="form-group row">
                      <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Segments</label>
                      <div className="col-sm-7">
-                       <input type="text" className="form-control" name="segments" value={this.state.segments} onChange={this.handleChange}/>
+                       <input type="text" className="form-control form-control-sm" name="segments" value={this.state.segments} onChange={this.handleChange}/>
                      </div>
                    </div>
                    <div className="form-group">
-                     <button type="submit" onClick={() => this.createCustomGeometry()} className="btn btn-secondary">Create Geometry</button>
+                     <button type="submit" onClick={() => this.createCustomGeometry()} className="btn btn-secondary btn-sm">Create Geometry</button>
                    </div>
                  </div>}
               </div>

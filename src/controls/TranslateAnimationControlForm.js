@@ -21,6 +21,7 @@ class TranslateAnimationControlForm extends React.Component {
     this.addControl = this.addControl.bind(this);
     this.modifyControl = this.modifyControl.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.resetObjectPositon = this.resetObjectPositon.bind(this);
   }
 
   handleCheckboxChange(event) {
@@ -80,6 +81,12 @@ class TranslateAnimationControlForm extends React.Component {
     }
   }
 
+  resetObjectPositon() {
+    this.props.animationControl.group.init();
+    this.props.animationControl.initToStart();
+    this.props.animationControl.group.updateProps();
+  }
+
   render() {
     const {animaticonGroups, selectedGroup, animationControl} = this.props;
     return <div className="card">
@@ -91,6 +98,7 @@ class TranslateAnimationControlForm extends React.Component {
           </div><span onClick={() => this.setState({open:!this.state.open})} className="fas fa-angle-down"></span>
         </div>
         {this.state.open && <form className="card-body--form" onSubmit={animationControl ? this.modifyControl : this.addControl}>
+          {animationControl && <span onClick={this.resetObjectPositon} className="btn btn-secondary btn-sm">Reset Object Position</span>}
           {!animationControl && <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Segments</label>
             <div className="col-sm-7">
@@ -104,23 +112,23 @@ class TranslateAnimationControlForm extends React.Component {
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Translate Path</label>
               <div className="col-sm-7">
-                <input type="text" name="pathItem" className="form-control" required={true} value={this.state.pathItem} onChange={this.handleChange}/>
+                <input type="text" name="pathItem" className="form-control form-control-sm" required={true} value={this.state.pathItem} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Duration</label>
               <div className="col-sm-7">
-                <input type="text" name="duration" className="form-control" required={true} value={this.state.duration} onChange={this.handleChange}/>
+                <input type="text" name="duration" className="form-control form-control-sm" required={true} value={this.state.duration} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Start At</label>
               <div className="col-sm-7">
-                <input type="text" name="startAt" className="form-control" required={true} value={this.state.startAt} onChange={this.handleChange}/>
+                <input type="text" name="startAt" className="form-control form-control-sm" required={true} value={this.state.startAt} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group">
-              <button type="submit" disabled={!this.state.groupId && !animationControl} className="btn btn-secondary">{animationControl ? "Modify" : "Submit"}</button>
+              <button type="submit" disabled={!this.state.groupId && !animationControl} className="btn btn-secondary btn-sm">{animationControl ? "Modify" : "Submit"}</button>
             </div>
           </div>}
         </form>}

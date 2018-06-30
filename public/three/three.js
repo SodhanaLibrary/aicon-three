@@ -8464,7 +8464,7 @@
 
 			function serialize( library, element ) {
 
-				if ( library[ element.uuid ] === undefined ) {
+				if ( library && library[ element.uuid ] === undefined ) {
 
 					library[ element.uuid ] = element.toJSON( meta );
 

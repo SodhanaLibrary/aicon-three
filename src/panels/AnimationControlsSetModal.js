@@ -77,23 +77,23 @@ class AnimationControlsSetModal extends React.Component{
                   <div className="form-group row">
                     <label htmlFor="staticEmail" className="col-sm-4 col-form-label">Name</label>
                     <div className="col-sm-8">
-                      <input type="text" className="form-control" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
+                      <input type="text" className="form-control form-control-sm" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
                     </div>
                   </div>
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label">Category</label>
                     <div className="col-sm-8">
-                      <input type="text" name="category" className="form-control" required={true} value={this.state.category} onChange={this.handleChange}/>
+                      <input type="text" name="category" className="form-control form-control-sm" required={true} value={this.state.category} onChange={this.handleChange}/>
                     </div>
                   </div>
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label">Description</label>
                     <div className="col-sm-8">
-                      <textarea type="text" name="description" className="form-control" required={true} value={this.state.description} onChange={this.handleChange}></textarea>
+                      <textarea type="text" name="description" className="form-control form-control-sm" required={true} value={this.state.description} onChange={this.handleChange}></textarea>
                     </div>
                   </div>
                   <div className="form-group modal-footer--buttons ">
-                    <button type="submit" className="btn btn-secondary">Submit</button>
+                    <button type="submit" className="btn btn-secondary btn-sm">Submit</button>
                   </div>
                 </form>
               </div>

@@ -106,46 +106,46 @@ class PathPropertiesForm extends React.Component {
         <div className="form-group row">
           <label htmlFor="staticEmail" className="col-sm-6 col-form-label">Material</label>
           <div className="col-sm-6 col-sm-bone-field">
-            <input type="checkbox" className="form-control" name="wireframe" checked={this.state.material} onChange={this.handleCheckboxChange}/>Wireframe
-            <input type="checkbox" className="form-control" name="showDots" checked={this.state.showDots} onChange={this.handleCheckboxChange}/>Show Dots
-            <input type="checkbox" className="form-control" name="visible" checked={this.state.visible} onChange={this.handleCheckboxChange}/>Visible
+            <input type="checkbox" className="form-control form-control-sm" name="wireframe" checked={this.state.material} onChange={this.handleCheckboxChange}/>Wireframe
+            <input type="checkbox" className="form-control form-control-sm" name="showDots" checked={this.state.showDots} onChange={this.handleCheckboxChange}/>Show Dots
+            <input type="checkbox" className="form-control form-control-sm" name="visible" checked={this.state.visible} onChange={this.handleCheckboxChange}/>Visible
           </div>
         </div>
          <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Id</label>
             <div className="col-sm-7">
-              <input type="text" className="form-control" name="id" required={true} value={this.state.id} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="id" required={true} value={this.state.id} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Name</label>
             <div className="col-sm-7">
-              <input type="text" className="form-control" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Z Index</label>
             <div className="col-sm-7">
-              <input type="text" className="form-control" name="zIndex" required={true} value={this.state.zIndex} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="zIndex" required={true} value={this.state.zIndex} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Fill Color</label>
             <div className="col-sm-7">
-              <input type="text" className="form-control" name="fillColor" required={true} value={this.state.fillColor} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="fillColor" required={true} value={this.state.fillColor} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">Center (X,Y)</label>
             <div className="col-sm-3 col-sm-bone-field">
-              <input type="text" className="form-control" name="position.x" required={true} value={this.state.position.x} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="position.x" required={true} value={this.state.position.x} onChange={this.handleChange}/>
             </div>
             <div className="col-sm-3 col-sm-bone-field">
-              <input type="text" className="form-control" name="position.y" required={true} value={this.state.position.y} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="position.y" required={true} value={this.state.position.y} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-secondary">Set Properties</button>
+            <button type="submit" className="btn btn-secondary btn-sm">Set Properties</button>
           </div></div>}
         </form>}
       </div>

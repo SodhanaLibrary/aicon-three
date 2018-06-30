@@ -28,7 +28,9 @@ class GlobalMessageModal extends React.Component{
                 </button>
               </div>
               <div className="modal-body">
-                {this.props.globalMessage}
+                <img style={{
+                  width:'100%'
+                }} src={this.props.globalMessage}/>
               </div>
             </Modal>;
   }

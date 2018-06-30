@@ -30,7 +30,7 @@ module.exports = {
 		'./src/index.js'
 	],
 	output: {
-		path: path.join(__dirname, 'public/date-time-picker4'),
+		path: path.join(__dirname, 'public/dist'),
 		filename: '[chunkhash].js'
 	},
 	resolve: {
@@ -60,7 +60,7 @@ module.exports = {
 		}),
 		new HtmlWebpackPlugin({
 			template: './src/template.html',
-			title: 'Webpack App'
+			title: 'DoodleMars'
 		}),
 		new webpack.optimize.DedupePlugin()
 	]

@@ -28,6 +28,13 @@ export const setSelectedSegment = selectedSegment => {
   }
 }
 
+export const setSelectedDiv = selectedDiv => {
+  return {
+    type: actions.UPDATE_SELECTED_DIV,
+    selectedDiv
+  }
+}
+
 export const setMainScene = mainScene => {
   return {
     type: actions.UPDATE_MAIN_PAPER_SCOPE,
@@ -61,6 +68,28 @@ export const addPath = path => {
     return {
       type: actions.ADD_PATH,
       path
+    }
+  } else {
+    return {};
+  }
+}
+
+export const addDiv = div => {
+  if(div) {
+    return {
+      type: actions.ADD_DIV,
+      div
+    }
+  } else {
+    return {};
+  }
+}
+
+export const removeDiv = div => {
+  if(div) {
+    return {
+      type: actions.REMOVE_DIV,
+      div
     }
   } else {
     return {};
@@ -130,5 +159,12 @@ export const updateSize = (size) => {
   return {
     type: actions.UPDATE_SIZE,
     size
+  }
+}
+
+export const updateRenderer = (renderer) => {
+  return {
+    type: actions.UPDATE_RENDERER,
+    renderer
   }
 }

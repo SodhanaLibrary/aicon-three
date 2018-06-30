@@ -54,8 +54,8 @@ class PathObj3 {
   }
 
   init() {
-    const {position, rotation, path, type, pathData, visible} = this.props;
-    if(type === 'custom-geometry' || type === 'Line') {
+    const {position, rotation, path, type, pathData, visible, scale} = this.props;
+    if((type === 'custom-geometry' || type === 'Line') && pathData.vertices) {
       this.path.geometry.vertices.forEach((v, index) => {
         const p = pathData.vertices[index];
         v.set(p.x, p.y, p.z);
@@ -64,8 +64,6 @@ class PathObj3 {
     }
     if(type !== 'Line') {
       this.path.geometry.center();
-    } else {
-
     }
     this.path.position.x = position.x;
     this.path.position.y = position.y;
@@ -75,7 +73,29 @@ class PathObj3 {
     this.path.rotation.y = rotation.y;
     this.path.rotation.z = rotation.z;
 
+    this.path.scale.x = scale.x;
+    this.path.scale.y = scale.y;
+    this.path.scale.z = scale.z;
+
     this.path.visible = visible;
+  }
+
+  updateProps() {
+    this.props.scale = {
+      x:this.path.scale.x,
+      y:this.path.scale.y,
+      z:this.path.scale.z
+    };
+    this.props.position = {
+      x:this.path.position.x,
+      y:this.path.position.y,
+      z:this.path.position.z
+    };
+    this.props.rotation = {
+      x:this.path.rotation.x,
+      y:this.path.rotation.y,
+      z:this.path.rotation.z
+    };
   }
 
   formDots() {
@@ -100,6 +120,7 @@ class PathObj3 {
       return this.curve.getPointAt(val);
     } else if(this.props.type === 'Line') {
       const line = new THREE.Path();
+      this.props.pathData.vertices = null;
     	line.moveTo( this.path.geometry.vertices[0].x, this.path.geometry.vertices[0].y );
     	line.lineTo( this.path.geometry.vertices[1].x, this.path.geometry.vertices[1].y );
     	this.curve = line;
@@ -110,16 +131,9 @@ class PathObj3 {
   }
 
   remove() {
-    if(this.group) {
-      let index = -1;
-      this.group.children.find((child, i) => {
-        if(child === this.path) {
-          index = i;
-        }
-      });
-      this.group.remove(this.path);
+    if(this.path.parent) {
+      this.path.parent.remove(this.path);
     }
-    this.scene.remove(this.path);
   }
 
   formZindexes() {
@@ -145,14 +159,16 @@ class PathObj3 {
   }
 
   getProperties() {
-    if(this.props.type === 'custom-geometry' || this.props.type === 'Line') {
-      this.props.pathData.vertices = this.path.geometry.vertices.map(v => {
-        return {
-          x:v.x,
-          y:v.y,
-          z:v.z
-        }
-      });
+    if((this.props.type === 'custom-geometry' || this.props.type === 'Line')) {
+      if(!this.props.pathData.vertices) {
+        this.props.pathData.vertices = this.path.geometry.vertices.map(v => {
+          return {
+            x:v.x,
+            y:v.y,
+            z:v.z
+          }
+        });
+      }
     } else {
       this.props.pathData = JSON.stringify(this.path.toJSON())
     }
@@ -201,6 +217,16 @@ class PathObj3 {
     this.path.geometry.vertices[segment.name].y += point.y;
     this.path.geometry.verticesNeedUpdate = true;
     this.curve = null;
+  }
+
+  clone() {
+    const pathProps = this.getProperties();
+    pathProps.position.x += 30;
+    pathProps.position.y += 30;
+    pathProps.id += "1";
+    pathProps.name += "1";
+    pathProps.scene = this.scene;
+    return new window.animaticonObjects.PathObj3(pathProps);
   }
 
   getAngle() {

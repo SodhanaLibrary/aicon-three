@@ -13,8 +13,11 @@ class PaperView extends React.Component {
     this.renderCanvas = this.renderCanvas.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.onWindowResize = this.onWindowResize.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+    this.onDropDiv = this.onDropDiv.bind(this);
+    this.selectDiv = this.selectDiv.bind(this);
+    this.updateDivDimension = this.updateDivDimension.bind(this);
+    this.divTextChange = this.divTextChange.bind(this);
   }
 
   componentDidMount() {
@@ -22,6 +25,7 @@ class PaperView extends React.Component {
   }
 
   init() {
+    const width = 1280 / 1.6, height = 720 / 1.6;
     const clock = new THREE.Clock();
     this.props.actions.setClock(clock);
     this.raycaster = new THREE.Raycaster();
@@ -29,34 +33,29 @@ class PaperView extends React.Component {
     this.currentTime = -1;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xfafafa );
-    const camera = new THREE.OrthographicCamera( this.canvasDiv.clientWidth / - 2, this.canvasDiv.clientWidth  / 2, this.canvasDiv.clientHeight / 2, this.canvasDiv.clientHeight / - 2, 1, 1000 );
+    const camera = new THREE.OrthographicCamera( width / - 2, width  / 2, height / 2, height / - 2, 1, 1000 );
     camera.position.set( 0, 0, 900 );
     camera.lookAt(0,0,0);
     scene.add( camera );
     this.camera = camera;
-    this.renderer = new THREE.WebGLRenderer( { antialias: true } );
+    this.renderer = new THREE.WebGLRenderer( { antialias: true, preserveDrawingBuffer: true  } );
     this.renderer.setPixelRatio( window.devicePixelRatio );
-    this.renderer.setSize( this.canvasDiv.clientWidth, this.canvasDiv.clientHeight );
+    this.renderer.setSize( width, height );
     this.canvasDiv.appendChild( this.renderer.domElement );
     this.props.actions.updateSize({
-      width:this.canvasDiv.clientWidth,
-      height:this.canvasDiv.clientHeight
+      width,
+      height
     });
     this.props.actions.setMainScene(scene);
+    this.props.actions.updateRenderer(this.canvasDiv);
     this.renderCanvas( scene, camera );
-    window.addEventListener( 'resize', this.onWindowResize, false );
-  }
-
-  onWindowResize() {
-    this.camera.aspect = this.renderer.domElement.clientWidth / this.renderer.domElement.clientHeight;
-    this.renderer.setSize( this.renderer.domElement.clientWidth, this.renderer.domElement.clientHeight );
-    this.camera.updateProjectionMatrix();
   }
 
   resetSelection() {
     this.props.actions.setSelectedGroup(null);
     this.props.actions.setSelectedAnimationControl(null);
     this.props.actions.setSelectedPath(null);
+    this.props.actions.setSelectedDiv(null);
   }
 
   handleClick() {
@@ -95,9 +94,7 @@ class PaperView extends React.Component {
 
     if(!selectedGroup && !selectedPath) {
       this.dragActive = false;
-      this.props.actions.setSelectedSegment(null);
-      this.props.actions.setSelectedPath(null);
-      this.props.actions.setSelectedGroup(null);
+      this.resetSelection();
     } else {
       this.dragActive = true;
     }
@@ -174,12 +171,11 @@ class PaperView extends React.Component {
 
   onMouseMove(event) {
     const {selectedSegment, selectedPath, selectedGroup} = this.props;
-    this.mouse.x = ( (event.clientX - this.renderer.domElement.offsetLeft) / this.renderer.domElement.clientWidth ) * 2 - 1;
-	  this.mouse.y = - ( (event.clientY - this.renderer.domElement.offsetTop) / this.renderer.domElement.clientHeight ) * 2 + 1;
-
+    this.mouse.x = ( (event.clientX - this.canvasDiv.offsetLeft) / this.canvasDiv.clientWidth ) * 2 - 1;
+	  this.mouse.y = - ( (event.clientY - this.canvasDiv.offsetTop) / this.canvasDiv.clientHeight ) * 2 + 1;
     const point = {
-      x :(event.clientX - this.renderer.domElement.offsetLeft) - this.renderer.domElement.clientWidth / 2,
-      y : - (event.clientY - this.renderer.domElement.offsetTop) + this.renderer.domElement.clientHeight / 2
+      x :(event.clientX - this.canvasDiv.offsetLeft) - this.canvasDiv.clientWidth / 2,
+      y : - (event.clientY - this.canvasDiv.offsetTop) + this.canvasDiv.clientHeight / 2
     };
 
     if(!this.previousPoint) {
@@ -196,9 +192,11 @@ class PaperView extends React.Component {
       } else if(selectedGroup) {
         selectedGroup.group.position.x += point.x - this.previousPoint.x;
         selectedGroup.group.position.y += point.y - this.previousPoint.y;
+        selectedGroup.updateProps();
       } else if(selectedPath){
         selectedPath.path.position.x += point.x - this.previousPoint.x;
         selectedPath.path.position.y += point.y - this.previousPoint.y;
+        selectedPath.updateProps();
       }
     }
 
@@ -245,6 +243,16 @@ class PaperView extends React.Component {
           position.x += 1;
           break;
       }
+
+      if(selectedPath) {
+        selectedPath.updateProps();
+      } else {
+        selectedGroup.updateProps();
+      }
+
+      if(selectedPath && event.nativeEvent.key === 'd' && event.nativeEvent.ctrlKey) {
+        this.props.actions.addPath(selectedPath.clone());
+      }
     }
   }
 
@@ -272,8 +280,53 @@ class PaperView extends React.Component {
     }
   }
 
+  selectDiv(event, dv) {
+    event.stopPropagation();
+    this.props.actions.setSelectedDiv(dv);
+  }
+
+  updateDivDimension(event) {
+    if(this.props.selectedDiv) {
+      const style = JSON.parse(this.props.selectedDiv.style);
+      style.width = event.target.clientWidth + 'px';
+      style.height = event.target.clientHeight + 'px';
+      this.props.selectedDiv.style = JSON.stringify(style, null, 1);
+    }
+  }
+
+  onDropDiv(event) {
+    if(this.props.selectedDiv) {
+      this.props.actions.removeDiv(this.props.selectedDiv);
+      const style = JSON.parse(this.props.selectedDiv.style);
+      style.left = (event.clientX - this.canvasDiv.offsetLeft) + 'px';
+      style.top = (event.clientY - this.canvasDiv.offsetTop) + 'px';
+      const dv = Object.assign(this.props.selectedDiv, {style: JSON.stringify(style, null, 1)});
+      this.props.actions.setSelectedDiv(dv);
+      this.props.actions.addDiv(dv);
+    }
+  }
+
+  divTextChange(event) {
+    if(this.props.selectedDiv) {
+      this.props.selectedDiv.text = event.target.value;
+    }
+  }
+
   render() {
-    return <div onMouseMove={this.onMouseMove} onKeyDown={this.onKeyDown} onMouseDown={this.handleClick} onMouseUp={this.onMouseUp} className="mainCanvas" tabIndex="0" ref={(ref) => this.canvasDiv = ref}></div>
+    const {selectedDiv} = this.props;
+    return <div className="mainCanvas__wrapper"><div onDragOver={(event) => event.preventDefault()} onDrop={this.onDropDiv} onMouseMove={this.onMouseMove} onKeyDown={this.onKeyDown} onMouseDown={this.handleClick} onMouseUp={this.onMouseUp} className="mainCanvas" tabIndex="0" ref={(ref) => this.canvasDiv = ref}>
+      {this.props.divs.map((dv, i) => {
+        const style = JSON.parse(dv.style);
+        if(dv === selectedDiv) {
+          style.border = '1px solid #ccc';
+          style.resize = 'both';
+        } else {
+          style.border = '0px';
+          style.resize = 'none';
+        }
+        return <textarea spellCheck="false" onChange={this.divTextChange} onMouseDown={(event) => this.selectDiv(event, dv)} key={i} onMouseUp={this.updateDivDimension} className="canvas-absolute-div" draggable={true} onDragStart={(event) => this.selectDiv(event, dv)} style={style}>{dv.text}</textarea>
+      })}
+    </div></div>
   }
 
 }
@@ -284,8 +337,10 @@ export default connect(
     selectedGroup:state.app.selectedGroup,
     selectedPath:state.app.selectedPath,
     selectedSegment:state.app.selectedSegment,
+    selectedDiv:state.app.selectedDiv,
     animaticonGroups:state.app.animaticonGroups,
     animationControls:state.animation.controls,
+    divs:state.app.divs,
     mainScene:state.app.mainScene,
     clock:state.animation.clock,
     paths:state.app.paths || []

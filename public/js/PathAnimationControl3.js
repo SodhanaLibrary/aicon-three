@@ -2,12 +2,15 @@ class PathAnimationControl3 {
   constructor({duration, toPath, startAt, id, pathId, group, groupId}) {
     this.animationControlClass = 'PathAnimationControl3';
     this.done = false;
-    this.scene = group.scene;
     this.id = id;
     this.group = group;
-    this.bodySeg = group.paths.find(path => path.props.id === pathId);
+    if(group && group.paths) {
+      this.scene = group.scene;
+      this.bodySeg = group.paths.find(path => path.props.id === pathId);
+    }
     this.setProps({duration, toPath, startAt, pathId});
     this.groupId = groupId;
+    this.onComplete = this.onComplete.bind(this);
   }
 
   setId(id) {
@@ -97,7 +100,7 @@ class PathAnimationControl3 {
       animationControlClass:"PathAnimationControl3",
       toPath:this.toPath,
       pathId:this.pathId,
-      groupId:this.group.groupId
+      groupId:this.group ? this.group.groupId : null
     };
   }
 }

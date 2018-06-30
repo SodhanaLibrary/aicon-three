@@ -112,7 +112,7 @@ class BannerSearchPanel extends React.Component{
         </div>
         {this.state.open && <form>
           <div className="form-group">
-              <input type="search" name="search" className="form-control" value=""/>
+              <input type="search" name="search" className="form-control form-control-sm" value=""/>
           </div>
           <div className="search-panel">
             {searchResults && searchResults.map((res, i) => <div key={i} onClick={() => this.addAnimaticonGroup(res)} className="search-panel-item search-panel-item--banner">

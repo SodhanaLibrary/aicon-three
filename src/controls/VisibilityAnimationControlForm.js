@@ -108,11 +108,11 @@ class VisibilityAnimationControlForm extends React.Component {
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Start At</label>
               <div className="col-sm-7">
-                <input type="text" name="startAt" className="form-control" required={true} value={this.state.startAt} onChange={this.handleChange}/>
+                <input type="text" name="startAt" className="form-control form-control-sm" required={true} value={this.state.startAt} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group">
-              <button type="submit" disabled={!this.state.groupId && !animationControl} className="btn btn-secondary">{animationControl ? "Modify" : "Submit"}</button>
+              <button type="submit" disabled={!this.state.groupId && !animationControl} className="btn btn-secondary btn-sm">{animationControl ? "Modify" : "Submit"}</button>
             </div>
           </div>}
         </form>}

@@ -61,9 +61,7 @@ class AnimationPanel extends React.Component{
   }
 
   reset() {
-    let groups = this.props.animationControls.map(ac => ac.group);
-    groups = groups.filter((group, index) => group && groups.indexOf(group) === index);
-    groups.forEach(group => group.init());
+    this.props.animaticonGroups.forEach(group => group.init());
   }
 
   saveAnimationControls() {
@@ -71,7 +69,7 @@ class AnimationPanel extends React.Component{
   }
 
   render() {
-    const {animationControls, selectedAnimationControl} = this.props;
+    const {animationControls, selectedAnimationControl, isAnimationCompleted} = this.props;
     return <div>
          <div className="body_content--timeline-wrapper">
            <div style={{
@@ -98,7 +96,7 @@ class AnimationPanel extends React.Component{
     <div className="body_content--timeline__buttons">
       <a href="#" onClick={this.playAnimations} className={classNames("btn btn-primary btn-sm active", {
         "disabled":this.props.animationControls.length === 0
-      })}  role="button" aria-pressed="true">Play</a>
+      })}  role="button" aria-pressed="true">{isAnimationCompleted ? "Play" : "Pause"}</a>
       <a href="#" onClick={this.reset} className={classNames("btn btn-primary btn-sm active", {
         "disabled":this.props.animationControls.length === 0
       })}  role="button" aria-pressed="true">Reset</a>
@@ -120,6 +118,8 @@ class AnimationPanel extends React.Component{
 export default connect(
   state => ({
     selectedGroup:state.app.selectedGroup,
+    animaticonGroups:state.app.animaticonGroups,
+    isAnimationCompleted:state.animation.isAnimationCompleted,
     animationControls:state.animation.controls,
     selectedAnimationControl:state.animation.selectedControl,
     clock:state.animation.clock

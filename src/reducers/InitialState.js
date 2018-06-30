@@ -4,11 +4,14 @@ export default {
     selectedGroup:null,
     selectedPath:null,
     selectedSegment:null,
+    selectedDiv:null,
     animaticonGroups:[],
     paths:[],
     bones:[],
+    divs:[],
     mainScene:null,
     showShapesModal:false,
+    renderer:null,
     size:{
       width:500,
       height:500

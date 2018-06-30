@@ -120,34 +120,34 @@ class RotateAnimationControlForm extends React.Component {
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-5 col-form-label">From</label>
               <div className="col-sm-7">
-                <input type="text" className="form-control" name="from" required={true} value={this.state.from} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="from" required={true} value={this.state.from} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Angle</label>
               <div className="col-sm-7">
-                <input type="text" name="angle" className="form-control" required={true} value={this.state.angle} onChange={this.handleChange}/>
+                <input type="text" name="angle" className="form-control form-control-sm" required={true} value={this.state.angle} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Duration</label>
               <div className="col-sm-7">
-                <input type="text" name="duration" className="form-control" required={true} value={this.state.duration} onChange={this.handleChange}/>
+                <input type="text" name="duration" className="form-control form-control-sm" required={true} value={this.state.duration} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label className="col-sm-5 col-form-label">Start At</label>
               <div className="col-sm-7">
-                <input type="text" name="startAt" className="form-control" required={true} value={this.state.startAt} onChange={this.handleChange}/>
+                <input type="text" name="startAt" className="form-control form-control-sm" required={true} value={this.state.startAt} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <div className="col-sm-4">
-                <button type="submit" disabled={!this.state.groupItemId && !this.props.animationControl} className="btn btn-secondary">{animationControl ? "Modify" : "Submit"}</button>
+                <button type="submit" disabled={!this.state.groupItemId && !this.props.animationControl} className="btn btn-secondary btn-sm">{animationControl ? "Modify" : "Submit"}</button>
               </div>
               <div className="col-sm-8 animation-form--actions">
-                <button onClick={this.decreaseAngle} className="btn btn-secondary"><i className="fas fa-chevron-circle-left"></i></button>
-                <button onClick={this.increaseAngle} className="btn btn-secondary"><i className="fas fa-chevron-circle-right"></i></button>
+                <button onClick={this.decreaseAngle} className="btn btn-secondary btn-sm"><i className="fas fa-chevron-circle-left"></i></button>
+                <button onClick={this.increaseAngle} className="btn btn-secondary btn-sm"><i className="fas fa-chevron-circle-right"></i></button>
               </div>
             </div>
           </div>}

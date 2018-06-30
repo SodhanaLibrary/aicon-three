@@ -85,16 +85,31 @@ class AnimaticonObjSetsModal extends React.Component{
   }
 
   async saveAnimaticonObjsSet(event) {
+    const {currentBanner} = this.props;
     event.preventDefault();
-    const {name, tags, img, animaticonObjName, position, scale} = this.state;
-    const subObj = {name, tags, animaticonObjName, img,
-      objJson:JSON.stringify({
-        bones:this.props.bones.filter(bone => bone.props.id).map(bone => bone.getProperties()),
-        paths:this.props.paths.filter(path => path.props.id).map(path => path.getProperties()),
-        position,
-        scale
-      })
-    };
+    let subObj = {};
+    if(currentBanner) {
+      const {name, tags, animaticonObjName, position, scale} = this.props.animaticonGroups[0].getProperties();
+      subObj = {name, tags, animaticonObjName,
+        objJson:JSON.stringify({
+          bones:this.props.animaticonGroups[0].bones.filter(bone => bone.props.id).map(bone => bone.getProperties()),
+          paths:this.props.animaticonGroups[0].paths.filter(path => path.props.id).map(path => path.getProperties()),
+          position,
+          scale
+        })
+      };
+      subObj.img = this.state.img;
+    } else {
+      const {name, tags, img, animaticonObjName, position, scale} = this.state;
+      subObj = {name, tags, animaticonObjName, img,
+        objJson:JSON.stringify({
+          bones:this.props.bones.filter(bone => bone.props.id).map(bone => bone.getProperties()),
+          paths:this.props.paths.filter(path => path.props.id).map(path => path.getProperties()),
+          position,
+          scale
+        })
+      };
+    }
     await Utils.apiFetch("POST_ANIMATICON_OBJS", subObj);
     this.handleClose();
   }
@@ -114,7 +129,11 @@ class AnimaticonObjSetsModal extends React.Component{
       });
       const subObj = {name, tags, animaticonBannerName, img:response,
         objJson:JSON.stringify({
-          groups:this.props.animaticonGroups.map(group => group.getProperties()),
+          groups:this.props.animaticonGroups.map(group => {
+            const props = group.getProperties();
+            delete props.img;
+            return props;
+          }),
           paths:this.props.paths.filter(path => !path.group).map(path => path.getProperties()),
           controls:this.props.animationControls.map(control => control.toJson())
         })
@@ -139,7 +158,11 @@ class AnimaticonObjSetsModal extends React.Component{
       });
       const subObj = {uuid, name, tags, animaticonBannerName, img:response,
         objJson:JSON.stringify({
-          groups:this.props.animaticonGroups.map(group => group.getProperties()),
+          groups:this.props.animaticonGroups.map(group => {
+            const props = group.getProperties();
+            delete props.img;
+            return props;
+          }),
           paths:this.props.paths.map(path => path.getProperties()),
           controls:this.props.animationControls.map(control => control.toJson())
         })
@@ -180,24 +203,24 @@ class AnimaticonObjSetsModal extends React.Component{
                   <div className="form-group row">
                     <label htmlFor="staticEmail" className="col-sm-4 col-form-label">Name</label>
                     <div className="col-sm-8">
-                      <input required={true} type="text" className="form-control" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
+                      <input required={true} type="text" className="form-control form-control-sm" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
                     </div>
                   </div>
                   {(!currentBanner && animaticonGroups.length === 1) ? <div className="form-group row">
                     <label className="col-sm-4 col-form-label">Animaticon Object Name</label>
                     <div className="col-sm-8">
-                      <input required={true} type="text" name="animaticonObjName" className="form-control" required={true} value={this.state.animaticonObjName} onChange={this.handleChange}/>
+                      <input required={true} type="text" name="animaticonObjName" className="form-control form-control-sm" required={true} value={this.state.animaticonObjName} onChange={this.handleChange}/>
                     </div>
                   </div> : <div className="form-group row">
                     <label className="col-sm-4 col-form-label">Animaticon Banner Name</label>
                     <div className="col-sm-8">
-                      <input required={true} type="text" name="animaticonBannerName" className="form-control" required={true} value={this.state.animaticonBannerName} onChange={this.handleChange}/>
+                      <input required={true} type="text" name="animaticonBannerName" className="form-control form-control-sm" required={true} value={this.state.animaticonBannerName} onChange={this.handleChange}/>
                     </div>
                   </div>}
                   <div className="form-group row">
                     <label className="col-sm-4 col-form-label">Tags</label>
                     <div className="col-sm-8">
-                      <input required={true} type="text" name="tags" className="form-control" required={true} value={this.state.tags} onChange={this.handleChange}/>
+                      <input required={true} type="text" name="tags" className="form-control form-control-sm" required={true} value={this.state.tags} onChange={this.handleChange}/>
                     </div>
                   </div>
                   <div className="form-group row">
@@ -208,10 +231,10 @@ class AnimaticonObjSetsModal extends React.Component{
                     </div>
                   </div>
                   <div className="form-group modal-footer--buttons">
-                    {(this.props.animaticonGroups.length === 1) && <button onClick={this.updateCurrentGroup} className="btn btn-secondary">Update current group</button>}
-                    {(this.props.animaticonGroups.length > 1) && <button onClick={this.saveAsBanner} className="btn btn-secondary">Create Banner</button>}
-                    {currentBanner && <button onClick={this.updateCurrentBanner} className="btn btn-secondary">Update Current Banner</button>}
-                    <button type="submit" className="btn btn-secondary">Create new</button>
+                    {(this.props.animaticonGroups.length === 1 && !currentBanner) && <button onClick={this.updateCurrentGroup} className="btn btn-secondary btn-sm">Update current group</button>}
+                    {(this.props.animaticonGroups.length > 1) && <button onClick={this.saveAsBanner} className="btn btn-secondary btn-sm">Create Banner</button>}
+                    {currentBanner && <button onClick={this.updateCurrentBanner} className="btn btn-secondary btn-sm">Update Current Banner</button>}
+                    <button type="submit" className="btn btn-secondary btn-sm">Create new group</button>
                   </div>
                 </form>
               </div>

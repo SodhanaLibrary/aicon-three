@@ -185,8 +185,8 @@ class Bone3 {
   formzIndexes() {
     const {zIndex} = this.props;
     if(this.muslePath) {
-       this.musleBorderPath.position.z = zIndex*10 - 5;
-       this.muslePath.position.z = zIndex*10 - 1;
+       this.musleBorderPath.position.z = zIndex - 0.5;
+       this.muslePath.position.z = zIndex - 0.1;
     }
   }
 

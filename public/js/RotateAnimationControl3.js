@@ -6,7 +6,9 @@ class RotateAnimationControl3 {
     this.id = id;
     this.group = group;
     this.groupItem = groupItem;
-    this.bodySeg = this.group.bones.find(bone => bone.props.id === this.groupItem).bone;
+    if(this.group) {
+      this.bodySeg = this.group.bones.find(bone => bone.props.id === this.groupItem).bone;
+    }
     this.setProps({duration, from, angle, startAt});
     this.groupId = groupId;
     this.onComplete = this.onComplete.bind(this);
@@ -21,7 +23,9 @@ class RotateAnimationControl3 {
   }
 
   init() {
-    this.bodySeg.rotation.z = this.from;
+    if(this.bodySeg) {
+      this.bodySeg.rotation.z = this.from;
+    }
     this.done = false;
     this.rotatedAngle = 0;
     this.started = false;
@@ -36,7 +40,7 @@ class RotateAnimationControl3 {
   }
 
   animate() {
-    if(!this.started) {
+    if(!this.started && this.bodySeg) {
       this.init();
       this.started = true;
       if(!this.tween) {

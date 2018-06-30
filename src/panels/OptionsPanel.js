@@ -10,7 +10,7 @@ import SelectedGroupControls from '../controls/SelectedGroupControls';
 import RotateAnimationControlForm from '../controls/RotateAnimationControlForm';
 import SelectedGroupProperties from '../properties/SelectedGroupProperties';
 import PathPropertiesForm from '../properties/PathPropertiesForm';
-
+import DivPropertiesForm from '../properties/DivPropertiesForm';
 
 class OptionsPanel extends React.Component{
   constructor(props){
@@ -27,7 +27,7 @@ class OptionsPanel extends React.Component{
   }
 
   render() {
-    const {selectedGroup, selectedPath, bones, paths} = this.props;
+    const {selectedGroup, selectedPath, bones, paths, selectedDiv} = this.props;
     return <div>
         <ul className="nav nav-tabs">
           <li className="nav-item">
@@ -40,6 +40,7 @@ class OptionsPanel extends React.Component{
          {this.state.selectedTab === 1 && <SelectedGroupControls/>}
          {this.state.selectedTab === 2 && selectedGroup && <SelectedGroupProperties/>}
          {this.state.selectedTab === 2 && selectedPath && <PathPropertiesForm path ={selectedPath}/>}
+         {this.state.selectedTab === 2 && selectedDiv && <DivPropertiesForm/>}
         </div>;
   }
 }
@@ -48,6 +49,7 @@ export default connect(
   state => ({
     selectedGroup:state.app.selectedGroup,
     selectedPath:state.app.selectedPath,
+    selectedDiv:state.app.selectedDiv,
     bones:state.app.bones,
     paths:state.app.paths
   }),

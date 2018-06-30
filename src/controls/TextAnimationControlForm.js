@@ -104,7 +104,7 @@ class TextAnimationControlForm extends React.Component {
           <div className="form-group row">
             <label htmlFor="staticEmail" className="col-sm-5 col-form-label">From Path</label>
             <div className="col-sm-5">
-              <input type="text" className="form-control" name="fromPath" required={true} value={this.state.fromPath} onChange={this.handleChange}/>
+              <input type="text" className="form-control form-control-sm" name="fromPath" required={true} value={this.state.fromPath} onChange={this.handleChange}/>
             </div>
             <div className="col-sm-2">
               {selectedPath && <a href="#" title="Export" className={classNames("btn btn-primary btn-sm", {disabled:!this.props.selectedPath})} onClick={() => this.copyPathData('fromPath')} role="button" aria-pressed="true"><i className="fas fa-external-link-square-alt"></i></a>}
@@ -113,7 +113,7 @@ class TextAnimationControlForm extends React.Component {
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">To Path</label>
             <div className="col-sm-5">
-              <input type="text" name="toPath" className="form-control" required={true} value={this.state.toPath} onChange={this.handleChange}/>
+              <input type="text" name="toPath" className="form-control form-control-sm" required={true} value={this.state.toPath} onChange={this.handleChange}/>
             </div>
             <div className="col-sm-2">
               {selectedPath && <a href="#" title="Export" className={classNames("btn btn-primary btn-sm", {disabled:!this.props.selectedPath})} onClick={() => this.copyPathData('toPath')} role="button" aria-pressed="true"><i className="fas fa-external-link-square-alt"></i></a>}
@@ -122,17 +122,17 @@ class TextAnimationControlForm extends React.Component {
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Duration</label>
             <div className="col-sm-7">
-              <input type="text" name="duration" className="form-control" required={true} value={this.state.duration} onChange={this.handleChange}/>
+              <input type="text" name="duration" className="form-control form-control-sm" required={true} value={this.state.duration} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Start At</label>
             <div className="col-sm-7">
-              <input type="text" name="startAt" className="form-control" required={true} value={this.state.startAt} onChange={this.handleChange}/>
+              <input type="text" name="startAt" className="form-control form-control-sm" required={true} value={this.state.startAt} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group">
-            <button type="submit" disabled={!selectedPath && !this.state.pathItemId && !animationControl} className="btn btn-secondary">{animationControl ? "Modify" : "Submit"}</button>
+            <button type="submit" disabled={!selectedPath && !this.state.pathItemId && !animationControl} className="btn btn-secondary btn-sm">{animationControl ? "Modify" : "Submit"}</button>
           </div>
           </div>}
         </form>}

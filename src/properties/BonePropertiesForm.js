@@ -163,83 +163,83 @@ class BonePropertiesForm extends React.Component {
           {this.state.groupItemId && <div>
             <div className="form-group row">
               <div className="col-sm-12">
-                <button onClick={this.addBone} type="submit" className="btn btn-secondary">Add Bone</button>
+                <button onClick={this.addBone} type="submit" className="btn btn-secondary btn-sm">Add Bone</button>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-6 col-form-label">Arcs</label>
               <div className="col-sm-3 col-sm-bone-field">
-                <input type="checkbox" className="form-control" name="arc.start" checked={this.state.arc.start} onChange={this.handleCheckboxChange}/> Start
+                <input type="checkbox" className="form-control form-control-sm" name="arc.start" checked={this.state.arc.start} onChange={this.handleCheckboxChange}/> Start
               </div>
               <div className="col-sm-3 col-sm-bone-field">
-                <input type="checkbox" className="form-control" name="arc.end" checked={this.state.arc.end} onChange={this.handleCheckboxChange}/> End
+                <input type="checkbox" className="form-control form-control-sm" name="arc.end" checked={this.state.arc.end} onChange={this.handleCheckboxChange}/> End
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Id</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="id" required={true} value={this.state.id} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="id" required={true} value={this.state.id} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Name</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="name" required={true} value={this.state.name} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Muscle Width Start</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="muscleWidth.start" required={true} value={this.state.muscleWidth.start} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="muscleWidth.start" required={true} value={this.state.muscleWidth.start} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Muscle Width End</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="muscleWidth.end" required={true} value={this.state.muscleWidth.end} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="muscleWidth.end" required={true} value={this.state.muscleWidth.end} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Z Index</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="zIndex" required={true} value={this.state.zIndex} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="zIndex" required={true} value={this.state.zIndex} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Fill Color</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="fillColor" required={true} value={this.state.fillColor} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="fillColor" required={true} value={this.state.fillColor} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Length</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="length" required={true} value={this.state.length} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="length" required={true} value={this.state.length} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Init Angle</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="initAngle" required={true} value={this.state.initAngle} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="initAngle" required={true} value={this.state.initAngle} onChange={this.handleChange}/>
               </div>
             </div>
             {!this.state.arc.start && <div>
               <div className="form-group row">
                 <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Joint1 Radius</label>
                 <div className="col-sm-5">
-                  <input type="text" className="form-control" name="joints.start.radius" required={true} value={this.state.joints.start.radius} onChange={this.handleChange}/>
+                  <input type="text" className="form-control form-control-sm" name="joints.start.radius" required={true} value={this.state.joints.start.radius} onChange={this.handleChange}/>
                 </div>
               </div>
               <div className="form-group row">
                 <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Joint1 Stroke Width</label>
                 <div className="col-sm-5">
-                  <input type="text" className="form-control" name="joints.start.strokeWidth" required={true} value={this.state.joints.start.strokeWidth} onChange={this.handleChange}/>
+                  <input type="text" className="form-control form-control-sm" name="joints.start.strokeWidth" required={true} value={this.state.joints.start.strokeWidth} onChange={this.handleChange}/>
                 </div>
               </div>
               <div className="form-group row">
                 <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Joint1 Stroke Color</label>
                 <div className="col-sm-5">
-                  <input type="text" className="form-control" name="joints.start.strokeColor" required={true} value={this.state.joints.start.strokeColor} onChange={this.handleChange}/>
+                  <input type="text" className="form-control form-control-sm" name="joints.start.strokeColor" required={true} value={this.state.joints.start.strokeColor} onChange={this.handleChange}/>
                 </div>
               </div>
             </div>}
@@ -247,48 +247,48 @@ class BonePropertiesForm extends React.Component {
               <div className="form-group row">
                 <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Joint2 Radius</label>
                 <div className="col-sm-5">
-                  <input type="text" className="form-control" name="joints.end.radius" required={true} value={this.state.joints.end.radius} onChange={this.handleChange}/>
+                  <input type="text" className="form-control form-control-sm" name="joints.end.radius" required={true} value={this.state.joints.end.radius} onChange={this.handleChange}/>
                 </div>
               </div>
               <div className="form-group row">
                 <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Joint2 Stroke Width</label>
                 <div className="col-sm-5">
-                  <input type="text" className="form-control" name="joints.end.strokeWidth" required={true} value={this.state.joints.end.strokeWidth} onChange={this.handleChange}/>
+                  <input type="text" className="form-control form-control-sm" name="joints.end.strokeWidth" required={true} value={this.state.joints.end.strokeWidth} onChange={this.handleChange}/>
                 </div>
               </div>
               <div className="form-group row">
                 <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Joint2 Stroke Color</label>
                 <div className="col-sm-5">
-                  <input type="text" className="form-control" name="joints.end.strokeColor" required={true} value={this.state.joints.end.strokeColor} onChange={this.handleChange}/>
+                  <input type="text" className="form-control form-control-sm" name="joints.end.strokeColor" required={true} value={this.state.joints.end.strokeColor} onChange={this.handleChange}/>
                 </div>
               </div>
             </div>}
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Border Stroke Color</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="border.strokeColor" required={true} value={this.state.border.strokeColor} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="border.strokeColor" required={true} value={this.state.border.strokeColor} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Border Stroke Width</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="border.strokeWidth" required={true} value={this.state.border.strokeWidth} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="border.strokeWidth" required={true} value={this.state.border.strokeWidth} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Bones</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="bones" value={this.state.bones} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="bones" value={this.state.bones} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group row">
               <label htmlFor="staticEmail" className="col-sm-7 col-form-label">Paths</label>
               <div className="col-sm-5">
-                <input type="text" className="form-control" name="paths" value={this.state.paths} onChange={this.handleChange}/>
+                <input type="text" className="form-control form-control-sm" name="paths" value={this.state.paths} onChange={this.handleChange}/>
               </div>
             </div>
             <div className="form-group">
-              <button type="submit" className="btn btn-secondary">Set Properties</button>
+              <button type="submit" className="btn btn-secondary btn-sm">Set Properties</button>
             </div>
           </div>}
 

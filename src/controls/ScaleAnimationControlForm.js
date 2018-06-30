@@ -93,23 +93,23 @@ class ScaleAnimationControlForm extends React.Component {
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">To (X, Y, Z)</label>
             <div className="col-sm-7">
-              <input type="text" name="to" className="form-control" required={true} value={this.state.to} onChange={this.handleChange}/>
+              <input type="text" name="to" className="form-control form-control-sm" required={true} value={this.state.to} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Duration</label>
             <div className="col-sm-7">
-              <input type="text" name="duration" className="form-control" required={true} value={this.state.duration} onChange={this.handleChange}/>
+              <input type="text" name="duration" className="form-control form-control-sm" required={true} value={this.state.duration} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group row">
             <label className="col-sm-5 col-form-label">Start At</label>
             <div className="col-sm-7">
-              <input type="text" name="startAt" className="form-control" required={true} value={this.state.startAt} onChange={this.handleChange}/>
+              <input type="text" name="startAt" className="form-control form-control-sm" required={true} value={this.state.startAt} onChange={this.handleChange}/>
             </div>
           </div>
           <div className="form-group">
-            <button type="submit" disabled={!this.state.groupItemId && !this.props.animationControl} className="btn btn-secondary">{animationControl ? "Modify" : "Submit"}</button>
+            <button type="submit" disabled={!this.state.groupItemId && !this.props.animationControl} className="btn btn-secondary btn-sm">{animationControl ? "Modify" : "Submit"}</button>
           </div>
           </div>}
         </form>}

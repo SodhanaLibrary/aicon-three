@@ -9,6 +9,7 @@ class ScaleAnimationControl3 {
     this.setProps({duration, to, startAt});
     this.bodySeg = this.group.bones.find(bone => bone.props.id === this.groupItem).bone;
     this.groupId = groupId;
+    this.onComplete = this.onComplete.bind(this);
   }
 
   setId(id) {
@@ -55,6 +56,10 @@ class ScaleAnimationControl3 {
       }
       this.tween.start();
     }
+  }
+
+  onComplete() {
+    this.done = true;
   }
 
   setStartAt(sec) {

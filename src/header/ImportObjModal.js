@@ -161,7 +161,7 @@ class ImportObjModal extends React.Component{
                     </div>
                   </div>
                   <div className="form-group modal-footer--buttons ">
-                    <button type="submit" className="btn btn-secondary">Submit</button>
+                    <button type="submit" className="btn btn-secondary btn-sm">Submit</button>
                   </div>
                 </form>
               </div>
